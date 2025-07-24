@@ -39,7 +39,7 @@ class _RotinaScreenState extends State<RotinaScreen> {
 
   final Map<String, List<String>> rotinas = {
     '🌞 Manhã': [
-      'Escovar dentes',
+      'Escovar dentes (manhã)',
       'Tomar banho',
       'Pentear cabelo',
       'Colocar roupa',
@@ -47,7 +47,7 @@ class _RotinaScreenState extends State<RotinaScreen> {
     ],
     '🌜 Noite': [
       'Banho + Roupa',
-      'Escovar dentes',
+      'Escovar dentes (noite)',
       'Bombinha',
       'Xarope',
       'Lavar o cabelo e penteado',
