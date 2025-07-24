@@ -30,6 +30,20 @@
 # ✅ Verifique sua URL com:
 #    git remote -v
 
+# ❌ Erro ao executar: git push -u origin main
+# Mensagem:
+# git@github.com: Permission denied (publickey).
+# fatal: Could not read from remote repository.
+# Please make sure you have the correct access rights
+# and the repository exists.
+#
+# ✅ Solução:
+# - Verifique se você possui uma chave SSH configurada no seu computador.
+# - Adicione sua chave SSH à sua conta do GitHub (https://github.com/settings/keys).
+# - Confirme se está usando a URL SSH correta:
+#     git remote set-url origin git@github.com:yAvataRy/rotina-dia-noite.git
+# - Teste sua conexão com:
+#     ssh -T git@github.com
 # -------------------------
 # COMANDO MAKE:
 # -------------------------
@@ -58,8 +72,5 @@ endif
 commit/main:
 	git add .
 	git commit -m "$(msg)"
-	git push origin main
+	git push
 
-
-
-# teste 20h33

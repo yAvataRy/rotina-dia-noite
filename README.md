@@ -1,16 +1,25 @@
 # rotina_app
 
-A new Flutter project.
+Aplicativo de Rotina de Tarefas
 
-## Getting Started
+Este projeto é um aplicativo Flutter desenvolvido para ajudar usuários a organizar e acompanhar suas tarefas diárias de forma simples e eficiente.
 
-This project is a starting point for a Flutter application.
+## Funcionalidades
 
-A few resources to get you started if this is your first Flutter project:
+- Cadastro, edição e exclusão de tarefas
+- Marcação de tarefas como concluídas
+- Visualização de tarefas do dia
+- Interface intuitiva e fácil de usar
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Como usar
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+1. Clone este repositório.
+2. Instale as dependências com `flutter pub get`.
+3. Execute o aplicativo com `flutter run`.
+
+## Recursos úteis
+
+- [Lab: Escreva seu primeiro app Flutter](https://docs.flutter.dev/get-started/codelab)
+- [Cookbook: Exemplos úteis de Flutter](https://docs.flutter.dev/cookbook)
+
+Para mais informações sobre Flutter, consulte a [documentação oficial](https://docs.flutter.dev/), que oferece tutoriais, exemplos e referência completa da API.
