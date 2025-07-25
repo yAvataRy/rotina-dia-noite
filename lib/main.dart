@@ -13,12 +13,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Rotina da Manhã e Noite',
-      theme: ThemeData(
-        primarySwatch: Colors.pink,
-        scaffoldBackgroundColor: const Color(0xFFFFF0F5),
-        textTheme: const TextTheme(bodyMedium: TextStyle(fontSize: 16)),
-      ),
+      title: 'Rotina Semanal',
+      theme: ThemeData(primarySwatch: Colors.pink),
       home: const RotinaScreen(),
       debugShowCheckedModeBanner: false,
     );
@@ -37,98 +33,91 @@ class _RotinaScreenState extends State<RotinaScreen> {
 
   final List<String> dias = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
 
-  final Map<String, List<String>> rotinas = {
-    '🌞 Manhã': [
-      'Escovar dentes (manhã)',
-      'Tomar banho',
-      'Pentear cabelo',
-      'Colocar roupa',
-      'Ir para a escola',
-    ],
-    '🌜 Noite': [
-      'Banho + Roupa',
-      'Escovar dentes (noite)',
-      'Bombinha',
-      'Xarope',
-      'Lavar o cabelo e penteado',
-      'Lavar o nariz',
-      'Dormir',
-    ],
-  };
+  final List<Map<String, dynamic>> tarefas = [
+    {'nome': 'Escovar os dentes	🪥', 'periodo': 'dia'},
+    {'nome': 'Colocar roupa	👕', 'periodo': 'dia'},
+    {'nome': 'Bombinha 	🫁', 'periodo': 'dia'},
+    {'nome': 'Arrumar cabelo 💇', 'periodo': 'dia'},
+    {'nome': 'Ir para escola 🎒', 'periodo': 'dia'},
+    {'nome': 'Banho + Roupa 🛁 + 👕', 'periodo': 'noite'},
+    {'nome': 'Escovar os dentes	🪥', 'periodo': 'noite'},
+    {'nome': 'Bombinha 	🫁', 'periodo': 'noite'},
+    {'nome': 'Lavar nariz 👃', 'periodo': 'noite'},
+    {'nome': 'Lavar cabelo e penteado 💆‍♀️', 'periodo': 'noite'},
+    {'nome': 'Dormir 🛏️', 'periodo': 'noite'},
+  ];
 
-  bool getTarefaFeita(String tarefa, String dia) {
-    return box.get('$tarefa-$dia', defaultValue: false);
+  bool getTarefaFeita(String tarefa, String dia, String periodo) {
+    return box.get('$tarefa-$dia-$periodo', defaultValue: false);
   }
 
-  void toggleTarefa(String tarefa, String dia) {
-    final chave = '$tarefa-$dia';
+  void toggleTarefa(String tarefa, String dia, String periodo) {
+    final chave = '$tarefa-$dia-$periodo';
     final atual = box.get(chave, defaultValue: false);
     box.put(chave, !atual);
     setState(() {});
   }
 
+  bool mostrarTarefa(String nome, String dia) {
+    if (nome == 'Lavar cabelo e penteado' && !(dia == 'Qua' || dia == 'Dom')) {
+      return false;
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Rotina da Manhã e Noite')),
+      appBar: AppBar(title: const Text('Rotina Semanal')),
       body: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: rotinas.entries.map((grupo) {
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 24.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+          child: Table(
+            defaultColumnWidth: const FixedColumnWidth(80.0),
+            border: TableBorder.all(),
+            children: [
+              TableRow(
+                children: [
+                  const TableCell(child: Center(child: Text('Tarefa'))),
+                  for (var dia in dias)
+                    TableCell(child: Center(child: Text(dia))),
+                ],
+              ),
+              for (var tarefa in tarefas)
+                TableRow(
+                  decoration: BoxDecoration(
+                    color: tarefa['periodo'] == 'dia'
+                        ? Colors.pink.shade50
+                        : Colors.purple.shade50,
+                  ),
                   children: [
-                    Text(
-                      grupo.key,
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.pink,
+                    TableCell(
+                      child: Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Text(tarefa['nome']),
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    Table(
-                      defaultColumnWidth: const FixedColumnWidth(80.0),
-                      border: TableBorder.all(),
-                      children: [
-                        TableRow(
-                          children: [
-                            const TableCell(
-                              child: Center(child: Text('Tarefa')),
-                            ),
-                            for (var dia in dias)
-                              TableCell(child: Center(child: Text(dia))),
-                          ],
-                        ),
-                        for (var tarefa in grupo.value)
-                          TableRow(
-                            children: [
-                              TableCell(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(4.0),
-                                  child: Text(tarefa),
+                    for (var dia in dias)
+                      mostrarTarefa(tarefa['nome'], dia)
+                          ? TableCell(
+                              child: Checkbox(
+                                value: getTarefaFeita(
+                                  tarefa['nome'],
+                                  dia,
+                                  tarefa['periodo'],
+                                ),
+                                onChanged: (_) => toggleTarefa(
+                                  tarefa['nome'],
+                                  dia,
+                                  tarefa['periodo'],
                                 ),
                               ),
-                              for (var dia in dias)
-                                TableCell(
-                                  child: Checkbox(
-                                    value: getTarefaFeita(tarefa, dia),
-                                    onChanged: (_) => toggleTarefa(tarefa, dia),
-                                  ),
-                                ),
-                            ],
-                          ),
-                      ],
-                    ),
+                            )
+                          : const TableCell(child: SizedBox()),
                   ],
                 ),
-              );
-            }).toList(),
+            ],
           ),
         ),
       ),
