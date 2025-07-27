@@ -172,22 +172,22 @@ class _RotinaScreenState extends State<RotinaScreen>
             onTap: onTap,
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 300),
-              width: 40,
-              height: 40,
+              width: 32,
+              height: 32,
               decoration: BoxDecoration(
                 color: isChecked ? cor : Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: cor, width: 3),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: cor, width: 2),
                 boxShadow: [
                   BoxShadow(
                     color: cor.withOpacity(0.3),
-                    blurRadius: 8,
-                    offset: const Offset(0, 4),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
                   ),
                 ],
               ),
               child: isChecked
-                  ? const Icon(Icons.check, color: Colors.white, size: 24)
+                  ? const Icon(Icons.check, color: Colors.white, size: 18)
                   : null,
             ),
           ),
@@ -210,126 +210,177 @@ class _RotinaScreenState extends State<RotinaScreen>
           ),
           child: Opacity(
             opacity: _animationController.value,
-            child: Container(
-              margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [cor.withOpacity(0.1), cor.withOpacity(0.05)],
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                ),
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: cor.withOpacity(0.3), width: 2),
-                boxShadow: [
-                  BoxShadow(
-                    color: cor.withOpacity(0.1),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return Container(
+                  width:
+                      constraints.maxWidth, // Garante que não ultrapasse a tela
+                  margin: const EdgeInsets.symmetric(
+                    vertical: 4,
+                    horizontal: 8,
                   ),
-                ],
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: Row(
-                  children: [
-                    // Ícone da tarefa
-                    Container(
-                      width: 60,
-                      height: 60,
-                      decoration: BoxDecoration(
-                        color: cor.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(12),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [cor.withOpacity(0.1), cor.withOpacity(0.05)],
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: cor.withOpacity(0.3), width: 2),
+                    boxShadow: [
+                      BoxShadow(
+                        color: cor.withOpacity(0.1),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
                       ),
-                      child: Center(
-                        child: Text(
-                          tarefa['emoji'],
-                          style: const TextStyle(fontSize: 28),
+                    ],
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Column(
+                      children: [
+                        // Linha superior: Ícone + Nome + Período
+                        Row(
+                          children: [
+                            // Ícone da tarefa
+                            Container(
+                              width: 50,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                color: cor.withOpacity(0.2),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  tarefa['emoji'],
+                                  style: const TextStyle(fontSize: 24),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            // Nome da tarefa
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    tarefa['nome'],
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: cor.withOpacity(0.8),
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 6,
+                                      vertical: 2,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: isNoite
+                                          ? Colors.indigo
+                                          : Colors.amber,
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Text(
+                                      isNoite ? '🌙 Noite' : '☀️ Dia',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    // Nome da tarefa
-                    Expanded(
-                      flex: 2,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            tarefa['nome'],
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: cor.withOpacity(0.8),
-                            ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 2,
-                            ),
-                            decoration: BoxDecoration(
-                              color: isNoite ? Colors.indigo : Colors.amber,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Text(
-                              isNoite ? '🌙 Noite' : '☀️ Dia',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    // Checkboxes para cada dia
-                    Expanded(
-                      flex: 3,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: dias.asMap().entries.map((entry) {
-                          final diaIndex = entry.key;
-                          final dia = entry.value;
+                        const SizedBox(height: 12),
+                        // Linha inferior: Dias da semana
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: dias.map((dia) {
+                              if (!mostrarTarefa(tarefa['nome'], dia)) {
+                                return Container(
+                                  width: 45,
+                                  margin: const EdgeInsets.symmetric(
+                                    horizontal: 2,
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        dia,
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Container(
+                                        width: 32,
+                                        height: 32,
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey.shade200,
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                        ),
+                                        child: const Icon(
+                                          Icons.remove,
+                                          color: Colors.grey,
+                                          size: 16,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }
 
-                          if (!mostrarTarefa(tarefa['nome'], dia)) {
-                            return const SizedBox(width: 40);
-                          }
-
-                          final isChecked = getTarefaFeita(
-                            tarefa['nome'],
-                            dia,
-                            tarefa['periodo'],
-                          );
-
-                          return Column(
-                            children: [
-                              Text(
+                              final isChecked = getTarefaFeita(
+                                tarefa['nome'],
                                 dia,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                  color: cor,
+                                tarefa['periodo'],
+                              );
+
+                              return Container(
+                                width: 45,
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: 2,
                                 ),
-                              ),
-                              const SizedBox(height: 4),
-                              _buildAnimatedCheckbox(
-                                isChecked,
-                                () => toggleTarefa(
-                                  tarefa['nome'],
-                                  dia,
-                                  tarefa['periodo'],
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      dia,
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                        color: cor,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    _buildAnimatedCheckbox(
+                                      isChecked,
+                                      () => toggleTarefa(
+                                        tarefa['nome'],
+                                        dia,
+                                        tarefa['periodo'],
+                                      ),
+                                      cor,
+                                    ),
+                                  ],
                                 ),
-                                cor,
-                              ),
-                            ],
-                          );
-                        }).toList(),
-                      ),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
+                  ),
+                );
+              },
             ),
           ),
         );
@@ -341,6 +392,8 @@ class _RotinaScreenState extends State<RotinaScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
+        width: double
+            .infinity, // Garante que o container ocupe toda a largura disponível
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
